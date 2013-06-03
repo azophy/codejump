@@ -1,8 +1,8 @@
 CodeJump version 0.8
 ====================
 
-CodeJump is a web based code editor that enabe you to code on your server directly from 
-the browser, without having the need to upload or go through a series of servers control 
+CodeJump is a web based code editor that enable you to code on your server directly from 
+your browser, without having the need to upload or go through a series of servers control 
 panel options. CodeJump previously named CodeMaster, but because the name CodeMaster already 
 used elsewhere, I decided to change the name to CodeJump. I hope it won't violate anyone's 
 rights.
@@ -23,7 +23,7 @@ overall to '766'
 ChangeLog
 =========
 
-What new on version 0.8
+What's new on version 0.8
 ------------------------
 - Authentification, username & password storage still file based
 - Edit on interface: more sophisticated then previous version
@@ -31,8 +31,8 @@ What new on version 0.8
 - bugfix on file permision detection. Now there's more information when error occured.
 
 
-Change Log from Code Master
-===========================
+Change Log from CodeMaster
+==========================
 What's new on version 0.62:
 -----------------------------
 - bug fix on PHP5 which automatically add slashes to every sent data
