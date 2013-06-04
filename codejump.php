@@ -4,7 +4,7 @@ CodeJump version 0.8
 
 Copyright 2013 by azophy (www.azophy.com).
 
-Licensed under GPL, read README.txt for further information
+Licensed under GPL, read README.md for further information
 */
 
 require_once "./codejump-files/config-codejump.php";
@@ -86,9 +86,118 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
 ?> 
 <!doctype html>
 <html>
-<head>
-	<title>CodeJump Editor</title>
-	<link rel="stylesheet" href="./codejump-files/codemirror.css" />
+  <head>
+    <title>CodeJump Editor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Loading Bootstrap -->
+    <link href="codejump-files/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Loading Flat UI -->
+    <link href="codejump-files/css/flat-ui.css" rel="stylesheet">
+    <link rel="shortcut icon" href="codejump-files/images/favicon.ico">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
+    <!--[if lt IE 9]>
+      <script src="codejump-files/js/html5shiv.js"></script>
+    <![endif]-->
+    
+    <link rel="stylesheet" href="./codejump-files/codemirror.css" />
+    <link rel="stylesheet" href="./codejump-files/jqtree.css">
+    
+    <style>
+      .CodeMirror {
+		border: 1px solid black;
+      }
+      
+      .cm-delimit {
+          color: #fa4;
+      }
+      
+      body {
+        padding-top:40px;padding-bottom:40px;
+      }
+      #list-file { margin-left:30px;height:450px;overflow-y:scroll; }
+    </style>
+  </head>
+  <body>
+      <!-- HEADER -->
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="navbar navbar-fixed-top navbar-inverse">
+            <div class="navbar-inner">
+              <ul class="nav">
+                <li><a href="#"><span class="fui-new-24"></span> CodeJump</a></li>
+                <li>
+                  <a href="#">File Menu</a>
+                  <ul>
+                    <li><a id="menu_new" href="javascript: save_clicked();">Create New File</a></li>
+                    <li><a href="javascript:load(prompt('Masukkan nama file!'));">Load File</a></li>
+                    <li><a id="menu_ren" href="javascript: rename(filename);">Rename Current File</a></li>
+                    <li><a id="menu_del" href="javascript: del_file(filename);">Delete Current File</a></li>
+                  </ul>
+                </li>
+              </ul>
+              <ul class="nav pull-right">
+                <li><a href="#">Log Out</a></li>
+              </ul>
+            </div>
+          </div><!-- /container/row/span12/navbar navbar-inverse -->
+        </div><!-- /container/row/span12 -->
+      </div><!-- /container/row-fluid -->
+    
+      <!-- MAIN AREA -->
+      <div class="row-fluid" id="main-area">
+        <div class="span2">
+          <h4>File Browser</h4>
+          <div id="list-file"></div>
+        </div>
+        <div class="span10">
+          <form method="post" action="#">
+            <textarea id="code" name="code"><?php
+			if (isset($_GET['filename'])) {
+				//echo $content; 
+				echo $data;
+				} else { ?>Select file to begin editing...
+<?php 			} ?></textarea>
+          </form>
+        </div>
+      </div>
+    
+      <div class="navbar navbar-inverse navbar-fixed-bottom">
+        <div class="navbar-inner">
+          <p class="navbar-text">&copy; Copyright 2013 <a href="www.azophy.com">www.azophy.com</a></p>
+        </div>
+      </div>
+    
+    <!-- Load JS here for greater good =============================-->
+    
+    <script src="codejump-files/js/jquery-1.8.2.min.js"></script>
+    <script src="codejump-files/js/jquery-ui-1.10.0.custom.min.js"></script>
+    <script src="codejump-files/js/jquery.dropkick-1.0.0.js"></script>
+    <script src="codejump-files/js/custom_checkbox_and_radio.js"></script>
+    <script src="codejump-files/js/custom_radio.js"></script>
+    <script src="codejump-files/js/jquery.tagsinput.js"></script>
+    <script src="codejump-files/js/bootstrap-tooltip.js"></script>
+    <script src="codejump-files/js/jquery.placeholder.js"></script>
+    <script src="http://vjs.zencdn.net/c/video.js"></script>
+    <script src="codejump-files/js/application.js"></script>
+    <!--[if lt IE 8]>
+      <script src="codejump-files/js/icon-font-ie7.js"></script>
+      <script src="codejump-files/js/icon-font-ie7-24.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+      try{
+        var pageTracker = _gat._getTracker("UA-19972760-2");
+        pageTracker._trackPageview();
+        } catch(err) {}
+    </script>
+    
+    <!-- --------------------------------------------------------------- -->
 	<script src="./codejump-files/codemirror.js"></script>
 	<script src="./codejump-files/xml.js"></script>
 	<script src="./codejump-files/css.js"></script>
@@ -96,110 +205,10 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
 	<script src="./codejump-files/htmlmixed.js"></script>
 
 	<script src="./codejump-files/emmet.min.js"></script>
-	<script src="./codejump-files/jquery-2.0.0.min.js"></script>
-  
     <script src="./codejump-files/tree.jquery.js"></script>
-    <link rel="stylesheet" href="./codejump-files/jqtree.css">
-	
-	<style>
-	.CodeMirror {
-		border: 1px solid black;
-	}
-	
-	.cm-delimit {
-		color: #fa4;
-	}
-      .header {
-        background: #9b0bcc;padding: 10px;margin:0;
-      }
-      .header h1 {
-        float:left; position: relative;margin:0;padding:0;
-       }
-      .header .file-info {
-          float: left;margin:10px;padding:0;
-      }
-      .header .menu {
-        float: right; margin:10px;
-       }
-      .header .menu a {
-        font-weight: bold; color: #000;
-       }
-      
-	  .row { position:relative;}
-      .sidebar { position:relative; float: left; background:#f6dcff; width:20%;padding:10px; }
-      #list_file { height:400px;overflow-y:scroll; }
-      .button {
-        position: relative; margin:0;width:100%; 
-      }
-      .button a {
-        background: #310042; color: #fff; font-weight: bold; text-align: center; 
-        text-decoration: none; padding: 10px; margin-right:3px;
-      }
-      .edit_area  { float: left; width:70%; padding: 10px; border-left: 1px solid #ba94c5; }
-      .edit_area h2 { margin:0;padding:0;}
-      .footer {
-        margin:0;background: #9b0bcc;padding:10px;
-      }
-      .login-box {
-        background: #9b0bcc; text-align: center; width: auto; margin:200px 0;
-        position: relative;
-        padding: 10px;
-      }
-      .login-box * {
-        text-align: center;
-      }
-	</style>  
-	<script>
-	  var filename = "";
-	</script>
-</head>
-<body>
-<?php 
-if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
-	<div class="header">
-	  <h1>CodeJump</h1>
-<?php 
-	if (isset($_GET['filename'])) { ?>
-	 <span id="label" class="file-info">Editing file: <?php echo $_GET['filename']; ?></span>
-<?php } else { ?>
-	 <span id="label" class="file-info">Select a file to begin editing</span>
-<?php } ?>
-      <span class="menu"><a href="?logout=true">Log Out</a></span>
-      <br style="clear:both" />
-	</div>
-	<div class="row">
-	  <div class="sidebar">
-        <div id="list_file"></div>
-        <hr/>
-        <div class="button">
-          <a href="javascript: create_new();">Create New File</a>
-        </div>
-	  </div>
-	  <div class="edit_area">
-		
-		<form method="post" action="#"><textarea id="code" name="code"><?php
-			if (isset($_GET['filename'])) {
-				//echo $content; 
-				echo $data;
-				} else { ?>Select file to begin editing...
-<?php 			} ?>
-		</textarea>
-		<!-- <button name="save" id="save">Save</button> -->
-          <h2>Press Ctrl+s to save the file</h2>
-          <div class="button" style="margin-top:10px;">
-            <a href="javascript: save_clicked();">Save File</a>
-            <a href="javascript: del_file(filename);">Delete Current File</a>
-            <a href="javascript: rename(filename);">Rename Current File</a>
-          </div>
-		</form>
-	  </div>
-	  <br style="clear:both;"/>
-	</div>
-    <div class="footer">
-      &copy; Copyright 2013 <a href="http://www.azophy.com">azophy</a>
-    </div>
-
-	<script>
+	<!-- --------------------------------------------------------------- -->
+        
+    <script>
 		var doc = CodeMirror.fromTextArea(document.getElementById("code"), {
 			mode : "text/html",
 			lineNumbers : true,
@@ -208,6 +217,12 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
 	</script>
 	
 	<script>
+      //disable class first
+        if (!($("#menu_ren").hasClass("disabled"))) {
+          $("#menu_ren").addClass("disabled");
+          $("#menu_del").addClass("disabled");
+        }
+      
 		function load(f) {
 		  filename = f; //alert(filename);
 		  var url = "./codejump.php?filename=" + filename; 
@@ -216,6 +231,11 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
 			doc.setValue(data);
 		  });
 		  $("#label").text("Editing file: " + filename);
+          //enable menu
+          if ($("#menu_ren").hasClass("disabled")) {
+            $("#menu_ren").removeClass("disabled");
+            $("#menu_del").removeClass("disabled");
+          }
 		}
 
 		function del_file(f) {
@@ -259,8 +279,6 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
 			}
 		}
 
-		//$("#save").click(save_clicked(filename));
-
 		function create_new() {
 		  filename = prompt('Insert new name for the file');
 		  var url = "./codejump.php?create_new=" + filename; 
@@ -277,6 +295,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
 		    event.preventDefault();
 		    return false;
 		});*/
+        
 
 		$(document).keydown(function(event) {
 
@@ -354,12 +373,12 @@ foreach ($files as $filename) {
 ?>
 
       ];
-      $('#list_file').tree({
+      $('#list-file').tree({
           data: data,
           autoOpen: false,
           dragAndDrop: false
       });
-      $('#list_file').bind(
+      $('#list-file').bind(
           'tree.select',
           function(event) {
               if (event.node) {
@@ -374,18 +393,5 @@ foreach ($files as $filename) {
           }
       );
 	</script>
-<?php } else { //show login box ?>
-  <div class="login-box">
-    <h2>Log In</h2>
-    <hr />
-    <form action="./codejump.php" method="post">
-      <label>Username</label>
-      <input type="text" name="user" />
-      <label>Password</label>
-      <input type="password" name="pass" />
-      <button type="submit" name="log_in">Log In</button>
-    </form>
-  </div>
-<?php } ?>
-</body>
+  </body>
 </html>
