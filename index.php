@@ -120,10 +120,12 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
       body {
         padding-top:40px;padding-bottom:40px;
       }
-      #list-file { margin-left:30px;height:450px;overflow-y:scroll; }
+      #list-file { margin-left:30px;height:250px;overflow-y:scroll; }
     </style>
   </head>
   <body>
+<?php
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
       <!-- HEADER -->
       <div class="row-fluid">
         <div class="span12">
@@ -144,7 +146,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
                 </li>
               </ul>
               <ul class="nav pull-right">
-                <li><a href="#">Log Out</a></li>
+                <li><a href="codejump.php?logout=true">Log Out</a></li>
               </ul>
             </div>
           </div><!-- /container/row/span12/navbar navbar-inverse -->
@@ -174,6 +176,32 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
           <p class="navbar-text">&copy; Copyright 2013 <a href="www.azophy.com">www.azophy.com</a></p>
         </div>
       </div>
+    
+<?php } else { ?>
+      <div class="login">
+        <div class="login-screen">
+          <div class="login-icon">
+            <img src="images/login/icon.png" alt="Welcome to Mail App" />
+            <h4>Welcome to <small>Mail App</small></h4>
+          </div>
+
+          <div class="login-form">
+            <div class="control-group">
+              <input type="text" class="login-field" value="" placeholder="Enter your name" id="login-name" />
+              <label class="login-field-icon fui-man-16" for="login-name"></label>
+            </div>
+
+            <div class="control-group">
+              <input type="password" class="login-field" value="" placeholder="Password" id="login-pass" />
+              <label class="login-field-icon fui-lock-16" for="login-pass"></label>
+            </div>
+
+            <a class="btn btn-primary btn-large btn-block" href="#">Login</a>
+            <a class="login-link" href="#">Lost your password?</a>
+          </div>
+        </div>
+      </div>
+<?php } ?>
     
     <!-- Load JS here for greater good =============================-->
     
@@ -291,6 +319,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
             if (data == '0') {
               filename=filename2;
               save_clicked();
+              location.reload();
             } else
               alert("Error in saving file '" + filename + "'!\n" + data); 
 		  });
@@ -329,6 +358,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
       //tree view management
       var data = [
 <?php 
+//code modified from source: http://www.php.net/manual/en/class.directoryiterator.php && http://php.net/manual/en/class.recursivedirectoryiterator.php
 $ritit = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('.',FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST); 
 $r = array(); 
 foreach ($ritit as $splFileInfo) { 

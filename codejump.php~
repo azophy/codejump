@@ -48,8 +48,8 @@ if (isset($_GET['logout']) && $_GET['logout']) {
 
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
 
-  if (isset($_GET['is_file_exist'])) {
-      echo (file_exists($_GET['is_file_exist']))?'1':'0';
+  if (isset($_GET['check_file_exist'])) {
+      echo (file_exists($_GET['check_file_exist']))?'1':'0';
       exit(0);
   } else if (isset($_GET['filename'])) {
 	  if (isset($_POST['save'])) {
@@ -286,15 +286,14 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
       
         function save_as() {
           var filename2 = prompt('Save file as ..');
-          var url = "./codejump.php?is_file_exist=" + filename2; 
+          var url = "./codejump.php?check_file_exist=" + filename2; 
 		  jQuery.get(url, function(data) {
-            if (data == '0') {
+            if (data == '1') {
               filename=filename2;
               save_clicked();
             } else
               alert("Error in saving file '" + filename + "'!\n" + data); 
 		  });
-		}
 
 		function create_new() {
 		  filename = prompt('Insert new name for the file');
