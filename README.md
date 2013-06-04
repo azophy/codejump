@@ -41,7 +41,7 @@ What's new on version 0.x
 ------------------------
 - bugfixe on ajax filename access
 - update on interface. CodeJump now use DesignModo's Free Flat UI!
-
+- more serious treeview file browser! now it's able to recursively list your directory's contents!
 
 What's new on version 0.8
 ------------------------

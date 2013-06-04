@@ -163,7 +163,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
           </form>
         </div>
       </div>
-    
+      
       <div class="navbar navbar-inverse navbar-fixed-bottom">
         <div class="navbar-inner">
           <p class="navbar-text">&copy; Copyright 2013 <a href="www.azophy.com">www.azophy.com</a></p>
@@ -311,68 +311,41 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
       
       //tree view management
       var data = [
-<?php
-//code taken from: http://stackoverflow.com/questions/4050511/how-to-list-files-and-folder-in-a-dir-php
+<?php 
+$ritit = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('.',FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST); 
+$r = array(); 
+foreach ($ritit as $splFileInfo) { 
+   $path = $splFileInfo->isDir() 
+         ? array($splFileInfo->getFilename() => array()) 
+         : array($splFileInfo->getFilename()); 
 
-// Create recursive dir iterator which skips dot folders
-$dir = new RecursiveDirectoryIterator('.',
-    FilesystemIterator::SKIP_DOTS);
+   for ($depth = $ritit->getDepth() - 1; $depth >= 0; $depth--) { 
+       $path = array($ritit->getSubIterator($depth)->current()->getFilename() => $path); 
+   } 
+   $r = array_merge_recursive($r, $path); 
+} 
 
-// Flatten the recursive iterator, folders come before their files
-$it  = new RecursiveIteratorIterator($dir,
-    RecursiveIteratorIterator::SELF_FIRST);
-
-// Maximum depth is 1 level deeper than the base folder
-$it->setMaxDepth(1);
-
-$pertama=true;
-// Basic loop compiling directories into structured array
-$files = Array();
-$dirs = Array();
-$n_dir=0;
-$n_file=0;
-foreach ($it as $fileinfo) {
-    if ($fileinfo->isDir()) {
-      $dirs[++$n_dir] = Array($fileinfo->getFilename(),Array());
-    } else if ($fileinfo->isFile()) {
-	  $sub_path = $it->getSubPath();
-      //printf("<li><a href='javascript: load(&#39;%s&#47;%s&#39;);'>%s/%s</a> <a href='javascript: del_file(&#39;%s&#39;);'>(delete file)</a></li>",$sub_path,$fileinfo->getFilename(), $sub_path, $fileinfo->getFilename(), 
-      if (!empty($sub_path)) {
-        $dirs[$n_dir][1][] = $fileinfo->getFilename();
-      } else {
-        $files[++$n_file] = $fileinfo->getFilename();
+function list_it($rr) {
+  $first=true;
+  foreach ($rr as $key => $val) {
+    if (is_array($val)) {
+      if ($key[0] != '.') {
+	    if ($first) $first=false; else echo ',';
+        echo "{label:'",$key,"', children: [";
+        list_it($val);
+        echo "]}";
+      }
+    } else {      
+      if ($val[0] != '.' && $val[strlen($val)-1] != '~') {
+        if ($first) $first=false; else echo ',';
+        echo "{label:'",$val,"'}";
       }
     }
+  }
 }
-//print_r($dirs);
-foreach ($dirs as $dir) { 
-  //print_r($dir);
-    if ($pertama) $pertama=false; else printf(","); 
-?>
-  {
-        label: '[<?php echo $dir[0]; ?>]',
-        children: [
-<?php $subpertama = true;
-      foreach ($dir[1] as $filename) { ?>
-            <?php if ($subpertama) $subpertama=false; else printf(","); ?>{ label: '<?php echo $filename; ?>' }
-<?php } ?>
-        ]
-   }
-<?php
-}
-foreach ($files as $filename) { 
-    if ($pertama) $pertama=false; else printf(","); 
-?>
-  {
-        label: '<?php echo $filename; ?>',
-        children: [
-        ]
-   }
-<?php
-}
-?>
-
-      ];
+ksort($r);        
+list_it($r);
+?>];      
       $('#list-file').tree({
           data: data,
           autoOpen: false,
