@@ -22,6 +22,10 @@ overall to '766'
 
 ChangeLog
 =========
+What's new on version 0.x
+------------------------
+- bugfixe on ajax filename access
+
 
 What's new on version 0.8
 ------------------------

@@ -187,6 +187,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
 		<!-- <button name="save" id="save">Save</button> -->
           <h2>Press Ctrl+s to save the file</h2>
           <div class="button" style="margin-top:10px;">
+            <a href="javascript: save_clicked();">Save File</a>
             <a href="javascript: del_file(filename);">Delete Current File</a>
             <a href="javascript: rename(filename);">Rename Current File</a>
           </div>
@@ -209,7 +210,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
 	<script>
 		function load(f) {
 		  filename = f; //alert(filename);
-		  var url = "./codemaster.php?filename=" + filename; 
+		  var url = "./codejump.php?filename=" + filename; 
 		  jQuery.get(url, function(data) {
 			//alert(data);
 			doc.setValue(data);
@@ -219,7 +220,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
 
 		function del_file(f) {
 		  if (confirm("Are you sure you want to delete file '" + f + "' ?")) {
-			var url = "./codemaster.php?del_file=" + f; 
+			var url = "./codejump.php?del_file=" + f; 
 			jQuery.get(url, function(data) {
 			  if (data == 1)
 				alert("File '" + f + "' successfully deleted!");
@@ -233,7 +234,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
 		function rename(f1) {
           var f2 = prompt('Enter the new file name you desire:');
 		  if (confirm("Are you sure you want to rename file '" + f1 + "' to '" + f2 + "'?")) {
-			var url = "./codemaster.php?rename_from=" + f1 + "&rename_to=" + f2; 
+			var url = "./codejump.php?rename_from=" + f1 + "&rename_to=" + f2; 
 			jQuery.get(url, function(data) {
 			  if (data == 1) 
 				alert("File '" + f1 + "' successfully renamed to '" + f2 + "'!");
@@ -247,7 +248,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
 		function save_clicked() {
 			if (confirm("Are you sure you wanted to edit '" + filename + "' ?")) {
 			  //filename = f;
-			  var url = "./codemaster.php?filename=" + filename; 
+			  var url = "./codejump.php?filename=" + filename; 
 			  jQuery.post(url, {save:true, code: doc.getValue()}, function(data) {
 				if (data == '1') 
                   alert("File '" + filename + "' successfully saved!");
@@ -262,9 +263,9 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
 
 		function create_new() {
 		  filename = prompt('Insert new name for the file');
-		  var url = "./codemaster.php?create_new=" + filename; 
+		  var url = "./codejump.php?create_new=" + filename; 
 		  jQuery.get(url, function(data) {
-			//window.location = "./codemaster.php?filename=" + filename; 
+			//window.location = "./codejump.php?filename=" + filename; 
 			location.reload();
 			//load(filename);
 		  });
