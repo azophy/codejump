@@ -8,34 +8,11 @@ Licensed under GPL, read README.md for further information
 */
 
 require_once "./codejump-files/config-codejump.php";
+require_once "./codejump-files/library.php";
 session_start();
 
-//code taken from: http://www.dreamincode.net/forums/topic/147880-does-php-5-automatically-addslashes/
-function remove_magic($array, $depth = 5)
-{
-  if($depth <= 0 || count($array) == 0)
-	return $array;
-  
-  foreach($array as $key => $value)
-  {
-	if(is_array($value))
-	  $array[stripslashes($key)] = remove_magic($value, $depth - 1);
-	else
-	  $array[stripslashes($key)] = stripslashes($value);
-  }
-  
-  return $array;
-}
-
-if(function_exists('set_magic_quotes_runtime'))
-  @set_magic_quotes_runtime(0);
-
-if((function_exists('get_magic_quotes_gpc') && @get_magic_quotes_gpc() == 1) || @ini_get('magic_quotes_sybase')) {
-  $_COOKIE = remove_magic($_COOKIE);
-  $_GET = remove_magic($_GET);
-  $_POST = remove_magic($_POST);
-  $_REQUEST = remove_magic($_REQUEST);
-}
+//HANDLE MAGIC QUOTES GPC
+handle_magic();
 
 if (isset($_GET['logout']) && $_GET['logout']) {
   session_destroy();
@@ -48,8 +25,8 @@ if (isset($_GET['logout']) && $_GET['logout']) {
 
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
 
-  if (isset($_GET['check_file_exist'])) {
-      echo (file_exists($_GET['check_file_exist']))?'1':'0';
+  if (isset($_GET['is_file_exist'])) {
+      echo (file_exists($_GET['is_file_exist']))?'1':'0';
       exit(0);
   } else if (isset($_GET['filename'])) {
 	  if (isset($_POST['save'])) {
@@ -120,10 +97,12 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
       body {
         padding-top:40px;padding-bottom:40px;
       }
-      #list-file { margin-left:30px;height:450px;overflow-y:scroll; }
+      #list-file { margin-left:30px;height:250px;overflow-y:scroll; }
     </style>
   </head>
   <body>
+<?php
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
       <!-- HEADER -->
       <div class="row-fluid">
         <div class="span12">
@@ -144,7 +123,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
                 </li>
               </ul>
               <ul class="nav pull-right">
-                <li><a href="#">Log Out</a></li>
+                <li><a href="codejump.php?logout=true">Log Out</a></li>
               </ul>
             </div>
           </div><!-- /container/row/span12/navbar navbar-inverse -->
@@ -153,19 +132,24 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
     
       <!-- MAIN AREA -->
       <div class="row-fluid" id="main-area">
-        <div class="span2">
+        <div class="span3">
           <h4>File Browser</h4>
+		  <hr/>
           <div id="list-file"></div>
+		  <hr/>
         </div>
-        <div class="span10">
-          <form method="post" action="#">
+        <div class="span9">
+          <ul class="nav nav-tabs" id="file-tab">
+          <li class="active">
+            <a href="#">Undefned file</a>
+          </li>
+        </ul>
             <textarea id="code" name="code"><?php
 			if (isset($_GET['filename'])) {
 				//echo $content; 
 				echo $data;
 				} else { ?>Select file to begin editing...
 <?php 			} ?></textarea>
-          </form>
         </div>
       </div>
       
@@ -174,6 +158,37 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
           <p class="navbar-text">&copy; Copyright 2013 <a href="www.azophy.com">www.azophy.com</a></p>
         </div>
       </div>
+    
+<?php } else { ?>
+	  <form method="post" action="codejump.php">
+
+      <div class="container">
+		<div class="login-screen">
+		<div class="span6">
+          <div class="login-icon">
+            <img src="codejump-files/images/login/icon.png" alt="Welcome to Mail App" />
+            <h4>Welcome to <small>CodeJump Editor</small></h4>
+          </div>
+
+          <div class="login-form">
+            <div class="control-group">
+              <input type="text" class="login-field" value="" placeholder="Enter your name" id="login-name" name="user"/>
+              <label class="login-field-icon fui-man-16" for="login-name"></label>
+            </div>
+
+            <div class="control-group">
+              <input type="password" class="login-field" value="" placeholder="Password" id="login-pass" name="pass"/>
+              <label class="login-field-icon fui-lock-16" for="login-pass"></label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-large btn-block" name="log_in">Login</button>
+            <a class="login-link" href="#">Lost your password?</a>
+          </div>
+        </div>
+		</div>
+	  </div>
+	</form>
+<?php } ?>
     
     <!-- Load JS here for greater good =============================-->
     
@@ -208,6 +223,8 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
 	<script src="./codejump-files/css.js"></script>
 	<script src="./codejump-files/javascript.js"></script>
 	<script src="./codejump-files/htmlmixed.js"></script>
+	<!-- <script src="./codejump-files/js/codemirror-addon/search/searchcursor.js"></script>
+	<script src="./codejump-files/js/codemirror-addon/search/match-highlighter.js"></script> -->
 
 	<script src="./codejump-files/emmet.min.js"></script>
     <script src="./codejump-files/tree.jquery.js"></script>
@@ -216,7 +233,11 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
     <script>
 		var doc = CodeMirror.fromTextArea(document.getElementById("code"), {
 			mode : "text/html",
+			//mode : "htmlmixed",
 			lineNumbers : true,
+            indentWithTabs : true,
+            smartIndent : false,
+			//highlightSelectionMatches: true,
 			profile: 'xhtml' /* define Emmet output profile */
 		});
 	</script>
@@ -286,14 +307,16 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
       
         function save_as() {
           var filename2 = prompt('Save file as ..');
-          var url = "./codejump.php?check_file_exist=" + filename2; 
+          var url = "./codejump.php?is_file_exist=" + filename2; 
 		  jQuery.get(url, function(data) {
-            if (data == '1') {
+            if (data == '0') {
               filename=filename2;
               save_clicked();
+              location.reload();
             } else
               alert("Error in saving file '" + filename + "'!\n" + data); 
 		  });
+		}
 
 		function create_new() {
 		  filename = prompt('Insert new name for the file');
@@ -328,39 +351,9 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
       //tree view management
       var data = [
 <?php 
-$ritit = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('.',FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST); 
-$r = array(); 
-foreach ($ritit as $splFileInfo) { 
-   $path = $splFileInfo->isDir() 
-         ? array($splFileInfo->getFilename() => array()) 
-         : array($splFileInfo->getFilename()); 
-
-   for ($depth = $ritit->getDepth() - 1; $depth >= 0; $depth--) { 
-       $path = array($ritit->getSubIterator($depth)->current()->getFilename() => $path); 
-   } 
-   $r = array_merge_recursive($r, $path); 
-} 
-
-function list_it($rr) {
-  $first=true;
-  foreach ($rr as $key => $val) {
-    if (is_array($val)) {
-      if ($key[0] != '.') {
-	    if ($first) $first=false; else echo ',';
-        echo "{label:'",$key,"', children: [";
-        list_it($val);
-        echo "]}";
-      }
-    } else {      
-      if ($val[0] != '.' && $val[strlen($val)-1] != '~') {
-        if ($first) $first=false; else echo ',';
-        echo "{label:'",$val,"'}";
-      }
-    }
-  }
-}
+$r = get_dir_structure();
 ksort($r);        
-list_it($r);
+generate_dir_structure_JSON_code($r);
 ?>];      
       $('#list-file').tree({
           data: data,

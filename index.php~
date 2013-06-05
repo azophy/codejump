@@ -178,6 +178,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
       </div>
     
 <?php } else { ?>
+	  <form method="post" action="codejump.php">
       <div class="login">
         <div class="login-screen">
           <div class="login-icon">
@@ -187,12 +188,12 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
 
           <div class="login-form">
             <div class="control-group">
-              <input type="text" class="login-field" value="" placeholder="Enter your name" id="login-name" />
+              <input type="text" class="login-field" value="" placeholder="Enter your name" id="login-name" name="user"/>
               <label class="login-field-icon fui-man-16" for="login-name"></label>
             </div>
 
             <div class="control-group">
-              <input type="password" class="login-field" value="" placeholder="Password" id="login-pass" />
+              <input type="password" class="login-field" value="" placeholder="Password" id="login-pass" name="pass"/>
               <label class="login-field-icon fui-lock-16" for="login-pass"></label>
             </div>
 
@@ -201,6 +202,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) { ?>
           </div>
         </div>
       </div>
+	</form>
 <?php } ?>
     
     <!-- Load JS here for greater good =============================-->
