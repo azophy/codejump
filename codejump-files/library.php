@@ -42,8 +42,8 @@ function is_logged_in() {
 //==================================
 
 //code modified from source: http://www.php.net/manual/en/class.directoryiterator.php && http://php.net/manual/en/class.recursivedirectoryiterator.php
-function get_dir_structure() {
-  $ritit = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('.',FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST); 
+function get_dir_structure($path = '.') {
+  $ritit = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path,FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST); 
   $ar = array(); 
   foreach ($ritit as $splFileInfo) { 
 	 $path = $splFileInfo->isDir() 

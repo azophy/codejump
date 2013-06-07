@@ -340,7 +340,7 @@ if (is_logged_in()) { ?>
       //tree view management
       var data = [
 <?php 
-$r = get_dir_structure();
+$r = get_dir_structure($root_path);
 ksort($r);        
 generate_dir_structure_JSON_code($r);
 ?>];      
@@ -349,17 +349,21 @@ generate_dir_structure_JSON_code($r);
           autoOpen: false,
           dragAndDrop: false
       });
+	  
+	  function get_node_path(a) {
+          if (a.parent.name == null)
+        	  return(a.name);
+          else
+        	  return(get_node_path(a.parent) + '/' + a.name);
+	  }
+	  
       $('#list-file').bind(
           'tree.select',
           function(event) {
               if (event.node) {
                   // node was selected
                   var node = event.node;
-                  if (node.parent.name != null)
-                    load_file('./'+node.parent.name+'/'+node.name);
-                  else if (!node.children[0])
-                    load_file('./'+node.name);
-                    //alert(node.children);
+				  load_file('<?php echo $root_path;?>'+get_node_path(node));
               }
           }
       );
