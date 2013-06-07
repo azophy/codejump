@@ -39,22 +39,23 @@ and code the files on your server
 
 CodeJump utilize emmet which enable you to code extremly fast. So if you type
 
-	div.login-box>form[action=# method=post]>(label{Username}+input[type=text name=user]+label{Password}+input[type=password name=pass]+button[type=submit name=login]{Log In})
+	div.nav>ul.nav.list>(li>a[href=#]{Link #$})*5
 
 in the editor section, it will magically transformed into:
 
-	<div class="login-box">
-	<form action="#" method="post">
-	<label for="">Username</label>
-	<input type="text" name="user" />
-	<label for="">Password</label>
-	<input type="password" name="pass" />
-	<button type="submit" name="login">Log In</button>
-	</form>
+	<div class="nav">
+		<ul class="nav list">
+			<li><a href="#">Link #1</a></li>
+			<li><a href="#">Link #2</a></li>
+			<li><a href="#">Link #3</a></li>
+			<li><a href="#">Link #4</a></li>
+			<li><a href="#">Link #5</a></li>
+		</ul>
 	</div>
 
 For more information about the syntax, please read it here: http://docs.emmet.io/abbreviations/syntax/
-Easy File Management
+
+**Easy File Management**
 
 The file browser which can be accessed in the sidebar gave you complete freedom to easily 
 manage your project directly from CodeJump page. You could create a new document, rename, 
@@ -66,7 +67,7 @@ extract all the file into the hosting's folder which you want to code there, mak
 permission is suitable (at least it has '7' for the owner, but for security you could set the 
 overall to '766' 
 
-Plan for the future
+Plans for the future
 -------------------
 - file loading animation
 - tabbed multi-file interface (still in consideration, is it really necessery or overkill)
