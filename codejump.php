@@ -109,7 +109,7 @@ if (is_logged_in()) {
       body {
         padding-top:40px;padding-bottom:40px;
       }
-      #list-file { height:250px;overflow-y:scroll; }
+      #list-file { height:400px;overflow-y:scroll; }
 	  #sidebar { padding:10px; }
     </style>
   </head>
