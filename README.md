@@ -25,8 +25,8 @@ extract all the file into the hosting's folder which you want to code there, mak
 permission is suitable (at least it has '7' for the owner, but for security you could set the 
 overall to '766' 
 
-Plan fo the future
-==================
+Plan for the future
+===================
 
 - file loading animation
 - tabbed multi-file interface (still in consideration, is it really necessery or overkill)

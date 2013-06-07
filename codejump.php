@@ -87,7 +87,7 @@ if (is_logged_in()) {
 
     <!-- Loading Flat UI -->
     <link href="codejump-files/css/flat-ui.css" rel="stylesheet">
-    <link rel="shortcut icon" href="codejump-files/images/favicon.ico">
+    <link rel="shortcut icon" href="codejump-files/images/favicon4.ico">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
     <!--[if lt IE 9]>
@@ -122,7 +122,7 @@ if (is_logged_in()) { ?>
           <div class="navbar navbar-fixed-top navbar-inverse">
             <div class="navbar-inner">
               <ul class="nav">
-                <li><a href="#"><img src="./codejump-files/images/logo-white.png" alt="CodeJump Logo" style="height:18px;" /></a></li>
+                <li><a href="#"><img src="./codejump-files/images/logo3-white.png" alt="CodeJump Logo" style="height:20px;" /></a></li>
                 <li>
                   <a href="#">File Menu</a>
                   <ul>
@@ -251,9 +251,9 @@ if (is_logged_in()) { ?>
 	
 	<script>
       //disable class first
-        if (!($("#menu_ren").hasClass("disabled"))) {
-          $("#menu_ren").addClass("disabled");
-          $("#menu_del").addClass("disabled");
+        if (!($("#menu_ren").hasClass("muted"))) {
+          $("#menu_ren").addClass("muted");
+          $("#menu_del").addClass("muted");
         }
       
 		//<<<< FILE MODIFICATION FUNCTION >>>>		
@@ -266,9 +266,9 @@ if (is_logged_in()) { ?>
 		  });
 		  $("#label").text("Editing file: " + filename);
           //enable menu
-          if ($("#menu_ren").hasClass("disabled")) {
-            $("#menu_ren").removeClass("disabled");
-            $("#menu_del").removeClass("disabled");
+          if ($("#menu_ren").hasClass("muted")) {
+            $("#menu_ren").removeClass("muted");
+            $("#menu_del").removeClass("muted");
           }
 		}
 
