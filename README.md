@@ -1,4 +1,4 @@
-CodeJump version 0.8
+CodeJump version 0.9
 ====================
 
 CodeJump is a web based code editor that enable you to code on your server directly from 
@@ -28,20 +28,21 @@ overall to '766'
 Plan fo the future
 ==================
 
-- file upload feature
 - file loading animation
-- tabbed multi-file interface
-- save as feature
+- tabbed multi-file interface (still in consideration, is it really necessery or overkill)
 - shortcut for: find & replace, indent, change between tabs
 - manage version through git
 
 ChangeLog
 =========
-What's new on version 0.x
+What's new on version 0.9
 ------------------------
+- file upload feature
 - bugfixe on ajax filename access
 - update on interface. CodeJump now use DesignModo's Free Flat UI!
 - more serious treeview file browser! now it's able to recursively list your directory's contents!
+- save as feature
+- tested on Chrome 25.x
 
 What's new on version 0.8
 ------------------------

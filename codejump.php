@@ -28,6 +28,18 @@ if (is_logged_in()) {
   if (isset($_GET['is_file_exist'])) {
       echo (file_exists($_GET['is_file_exist']))?'1':'0';
       exit(0);
+  } else if (isset($_FILES["upload_file"])) {
+  	if ($_FILES["upload_file"]["error"] > 0) {
+	  //echo "Return Code: " . $_FILES["upload_file"]["error"] . "<br>";
+    } else {
+	  if (file_exists("upload/" . $_FILES["upload_file"]["name"])) {
+		  //echo $_FILES["upload_file"]["name"] . " already exists. ";
+	  } else {
+		  move_uploaded_file($_FILES["upload_file"]["tmp_name"], "./" . $_FILES["upload_file"]["name"]);
+		  //echo "1";
+	  }
+    }
+	//exit(0);
   } else if (isset($_GET['filename'])) {
 	  if (isset($_POST['save'])) {
 		  $file=fopen($_GET['filename'], 'w') or die('Cannot open file:  '.$_GET['filename']);
@@ -114,10 +126,13 @@ if (is_logged_in()) { ?>
                 <li>
                   <a href="#">File Menu</a>
                   <ul>
+                    <li><a id="menu_new" href="javascript: create_new_file();">Create New File</a></li>
+					<li><a href="javascript:upload_file();">Upload File</a></li>
+					<li class="divider"></li>
+                    <li><a href="javascript:load_file(prompt('Masukkan nama file!'));">Load File</a></li>
                     <li><a id="menu_new" href="javascript: save_file(filename);">Save File</a></li>
                     <li><a id="menu_new" href="javascript: save_file_as();">Save As..</a></li>
-                    <li><a id="menu_new" href="javascript: create_new_file();">Create New File</a></li>
-                    <li><a href="javascript:load_file(prompt('Masukkan nama file!'));">Load File</a></li>
+					<li class="divider"></li>
                     <li><a id="menu_ren" href="javascript: rename_file(filename);">Rename Current File</a></li>
                     <li><a id="menu_del" href="javascript: delete_file(filename);">Delete Current File</a></li>
                   </ul>
@@ -154,6 +169,12 @@ if (is_logged_in()) { ?>
           <p class="navbar-text">&copy; Copyright 2013 <a href="www.azophy.com">www.azophy.com</a></p>
         </div>
       </div>
+	  
+	  <!-- Hacky select file element for upload feature -->
+	  <form action="codejump.php" method="post" enctype="multipart/form-data" style="display:none;">
+	  	<input type="file" id="select_file" name="upload_file"/>
+		<button type="submit" id="submit_file"></button>
+	  </form>
     
 <?php } else { ?>
 	  
@@ -213,6 +234,7 @@ if (is_logged_in()) { ?>
 
 	<script src="./codejump-files/emmet.min.js"></script>
     <script src="./codejump-files/tree.jquery.js"></script>
+	<script src="./codejump-files/library.js"></script>
 	<!-- --------------------------------------------------------------- -->
         
     <script>
@@ -234,6 +256,7 @@ if (is_logged_in()) { ?>
           $("#menu_del").addClass("disabled");
         }
       
+		//<<<< FILE MODIFICATION FUNCTION >>>>		
 		function load_file(f) {
 		  filename = f; //alert(filename);
 		  var url = "./codejump.php?filename=" + filename; 
@@ -247,33 +270,6 @@ if (is_logged_in()) { ?>
             $("#menu_ren").removeClass("disabled");
             $("#menu_del").removeClass("disabled");
           }
-		}
-
-		function delete_file(f) {
-		  if (confirm("Are you sure you want to delete file '" + f + "' ?")) {
-			var url = "./codejump.php?del_file=" + f; 
-			jQuery.get(url, function(data) {
-			  if (data == 1)
-				alert("File '" + f + "' successfully deleted!");
-              /*else
-                alert("Error in deleting file '" + f + "'!\n" + data); */
-			  location.reload();
-			});
-		  }
-		}
-
-		function rename_file(f1) {
-          var f2 = prompt('Enter the new file name you desire:');
-		  if (confirm("Are you sure you want to rename file '" + f1 + "' to '" + f2 + "'?")) {
-			var url = "./codejump.php?rename_from=" + f1 + "&rename_to=" + f2; 
-			jQuery.get(url, function(data) {
-			  if (data == 1) 
-				alert("File '" + f1 + "' successfully renamed to '" + f2 + "'!");
-              else
-                alert("Error in renaming file '" + f1 + "'!\n" + data); 
-			  location.reload();
-			});
-		  }
 		}
 
 		function save_file(f) {
@@ -301,35 +297,44 @@ if (is_logged_in()) { ?>
               alert("Error in saving file '" + filename2 + "'!\n" + data); 
 		  });
 		}
-
-		function create_new_file() {
-		  filename = prompt('Insert new name for the file');
-		  var url = "./codejump.php?create_new=" + filename; 
-		  jQuery.get(url, function(data) {
-			//window.location = "./codejump.php?filename=" + filename; 
-			location.reload();
-			//load(filename);
-		  });
+		
+		function upload_file() {
+			$("#select_file").trigger('click');
 		}
-
+		
+		$("#select_file").change(function() {
+			//alert($("#select_file").val());
+			$("#submit_file").trigger('click');
+			/*var url = "./codejump.php"; 
+			jQuery.post(url, {upload_file: $("#select_file") }, function(data) {
+			if (data == '1') 
+			  alert("File '" + f + "' successfully saved!");
+            else
+			  alert("Error in saving file '" + f + "'!\n" + data); 
+			});
+			location.reload();*/
+		});
+		
 		/*$(window).keypress(function(event) {
 		    if (!(event.which == 115 && event.ctrlKey) && !(event.which == 19)) return true;
 		    alert("Ctrl-S pressed");
 		    event.preventDefault();
 		    return false;
-		});*/
-        
+		});*/        
 
 		$(document).keydown(function(event) {
-
+			
 			//19 for Mac Command+S
-			if (!( String.fromCharCode(event.which).toLowerCase() == 's' && event.ctrlKey) && !(event.which == 19)) return true;
-
-			//alert("Ctrl-s pressed");
-			save_file(filename);
-
-			event.preventDefault();
-			return false;
+			if (( String.fromCharCode(event.which).toLowerCase() == 's' && event.ctrlKey) || (event.which == 19)) {
+				//alert("Ctrl-s pressed");
+				//window["save_file"](filename);
+				save_file(filename);
+	
+				event.preventDefault();
+				return false;
+			}
+				
+			return true;
 		});
       
       //tree view management
