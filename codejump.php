@@ -114,12 +114,12 @@ if (is_logged_in()) { ?>
                 <li>
                   <a href="#">File Menu</a>
                   <ul>
-                    <li><a id="menu_new" href="javascript: save_clicked();">Save File</a></li>
-                    <li><a id="menu_new" href="javascript: save_as();">Save As..</a></li>
-                    <li><a id="menu_new" href="javascript: create_new();">Create New File</a></li>
-                    <li><a href="javascript:load(prompt('Masukkan nama file!'));">Load File</a></li>
-                    <li><a id="menu_ren" href="javascript: rename(filename);">Rename Current File</a></li>
-                    <li><a id="menu_del" href="javascript: del_file(filename);">Delete Current File</a></li>
+                    <li><a id="menu_new" href="javascript: save_file(filename);">Save File</a></li>
+                    <li><a id="menu_new" href="javascript: save_file_as();">Save As..</a></li>
+                    <li><a id="menu_new" href="javascript: create_new_file();">Create New File</a></li>
+                    <li><a href="javascript:load_file(prompt('Masukkan nama file!'));">Load File</a></li>
+                    <li><a id="menu_ren" href="javascript: rename_file(filename);">Rename Current File</a></li>
+                    <li><a id="menu_del" href="javascript: delete_file(filename);">Delete Current File</a></li>
                   </ul>
                 </li>
               </ul>
@@ -134,17 +134,12 @@ if (is_logged_in()) { ?>
       <!-- MAIN AREA -->
       <div class="row-fluid" id="main-area">
         <div class="span3" id="sidebar">
-          <h4>File Browser</h4>
-		  <hr/>
-          <div id="list-file"></div>
-		  <hr/>
+			<h4>File Browser</h4><hr />
+			<div id="list-file"></div>
+			<hr/>
         </div>
         <div class="span9">
-          <ul class="nav nav-tabs" id="file-tab">
-          <li class="active">
-            <a href="#">Undefned file</a>
-          </li>
-        </ul>
+			<h3 id="label">Editing file : none</h3><hr />
             <textarea id="code" name="code"><?php
 			if (isset($_GET['filename'])) {
 				//echo $content; 
@@ -239,7 +234,7 @@ if (is_logged_in()) { ?>
           $("#menu_del").addClass("disabled");
         }
       
-		function load(f) {
+		function load_file(f) {
 		  filename = f; //alert(filename);
 		  var url = "./codejump.php?filename=" + filename; 
 		  jQuery.get(url, function(data) {
@@ -254,7 +249,7 @@ if (is_logged_in()) { ?>
           }
 		}
 
-		function del_file(f) {
+		function delete_file(f) {
 		  if (confirm("Are you sure you want to delete file '" + f + "' ?")) {
 			var url = "./codejump.php?del_file=" + f; 
 			jQuery.get(url, function(data) {
@@ -267,7 +262,7 @@ if (is_logged_in()) { ?>
 		  }
 		}
 
-		function rename(f1) {
+		function rename_file(f1) {
           var f2 = prompt('Enter the new file name you desire:');
 		  if (confirm("Are you sure you want to rename file '" + f1 + "' to '" + f2 + "'?")) {
 			var url = "./codejump.php?rename_from=" + f1 + "&rename_to=" + f2; 
@@ -281,34 +276,33 @@ if (is_logged_in()) { ?>
 		  }
 		}
 
-		function save_clicked() {
-			if (confirm("Are you sure you wanted to edit '" + filename + "' ?")) {
+		function save_file(f) {
+			if (confirm("Are you sure you wanted to edit '" + f + "' ?")) {
 			  //filename = f;
-			  var url = "./codejump.php?filename=" + filename; 
+			  var url = "./codejump.php?filename=" + f; 
 			  jQuery.post(url, {save:true, code: doc.getValue()}, function(data) {
 				if (data == '1') 
-                  alert("File '" + filename + "' successfully saved!");
+                  alert("File '" + f + "' successfully saved!");
                 else
-                  alert("Error in saving file '" + filename + "'!\n" + data); 
+                  alert("Error in saving file '" + f + "'!\n" + data); 
 			  });
-			  load(filename);
+			  load_file(f);
 			}
 		}
       
-        function save_as() {
+        function save_file_as() {
           var filename2 = prompt('Save file as ..');
           var url = "./codejump.php?is_file_exist=" + filename2; 
 		  jQuery.get(url, function(data) {
             if (data == '0') {
-              filename=filename2;
-              save_clicked();
+              save_file(filename2);
               location.reload();
             } else
-              alert("Error in saving file '" + filename + "'!\n" + data); 
+              alert("Error in saving file '" + filename2 + "'!\n" + data); 
 		  });
 		}
 
-		function create_new() {
+		function create_new_file() {
 		  filename = prompt('Insert new name for the file');
 		  var url = "./codejump.php?create_new=" + filename; 
 		  jQuery.get(url, function(data) {
@@ -332,7 +326,7 @@ if (is_logged_in()) { ?>
 			if (!( String.fromCharCode(event.which).toLowerCase() == 's' && event.ctrlKey) && !(event.which == 19)) return true;
 
 			//alert("Ctrl-s pressed");
-			save_clicked();
+			save_file(filename);
 
 			event.preventDefault();
 			return false;
@@ -357,9 +351,9 @@ generate_dir_structure_JSON_code($r);
                   // node was selected
                   var node = event.node;
                   if (node.parent.name != null)
-                    load('./'+node.parent.name+'/'+node.name);
+                    load_file('./'+node.parent.name+'/'+node.name);
                   else if (!node.children[0])
-                    load('./'+node.name);
+                    load_file('./'+node.name);
                     //alert(node.children);
               }
           }
