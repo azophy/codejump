@@ -7,74 +7,10 @@ Copyright 2013 by azophy (www.azophy.com).
 Licensed under GPL, read README.md for further information
 */
 
+session_start();
 require_once "./codejump-files/config-codejump.php";
 require_once "./codejump-files/library.php";
-session_start();
-
-//HANDLE MAGIC QUOTES GPC
-handle_magic();
-
-if (isset($_GET['logout']) && $_GET['logout']) {
-  session_destroy();
-  header("location: codejump.php");
-} else if (isset($_POST['log_in'])) {
-  if ( ($_POST['user'] == $codejump_username) && (md5($_POST['pass']) == $codejump_pass_hash) ) {
-	$_SESSION['logged_in'] = true;
-  }
-}
-
-if (is_logged_in()) {
-
-  if (isset($_GET['is_file_exist'])) {
-      echo (file_exists($_GET['is_file_exist']))?'1':'0';
-      exit(0);
-  } else if (isset($_FILES["upload_file"])) {
-  	if ($_FILES["upload_file"]["error"] > 0) {
-	  //echo "Return Code: " . $_FILES["upload_file"]["error"] . "<br>";
-    } else {
-	  if (file_exists("upload/" . $_FILES["upload_file"]["name"])) {
-		  //echo $_FILES["upload_file"]["name"] . " already exists. ";
-	  } else {
-		  move_uploaded_file($_FILES["upload_file"]["tmp_name"], "./" . $_FILES["upload_file"]["name"]);
-		  //echo "1";
-	  }
-    }
-	//exit(0);
-  } else if (isset($_GET['filename'])) {
-	  if (isset($_POST['save'])) {
-		  $file=fopen($_GET['filename'], 'w') or die('Cannot open file:  '.$_GET['filename']);
-		  fwrite($file,$_POST['code']);
-		  fclose($file);
-		  echo 1;
-          exit(0);
-	  } else {
-		$file=fopen($_GET['filename'],"r") or exit("Unable to open file!");
-		$content="";
-		/*while (!feof($file))
-		  {
-		  //$content+=fgetc($file);
-		  }*/
-		$data = fread($file,filesize($_GET['filename']));
-		fclose($file);
-		echo $data;
-	  }
-	  exit(0);
-  } else if (isset($_GET['create_new'])) {
-	  $file=fopen($_GET['create_new'], 'w') or die('Cannot open file:  '.$_GET['filename']);
-	  fwrite($file,"empty file..");
-	  fclose($file);
-	  echo 1;
-      exit(0);
-  } else if (isset($_GET['del_file'])) {
-      if (unlink($_GET['del_file'])) echo 1; 
-      exit(0);
-  } else if (isset($_GET['rename_from'])) {
-      if (rename($_GET['rename_from'], $_GET['rename_to'])) {
-        echo 1;
-      }
-      exit(0);
-  }
-}
+require_once "./codejump-files/head-controller.php";
 ?> 
 <!doctype html>
 <html>
@@ -94,8 +30,8 @@ if (is_logged_in()) {
       <script src="codejump-files/js/html5shiv.js"></script>
     <![endif]-->
     
-    <link rel="stylesheet" href="./codejump-files/codemirror.css" />
-    <link rel="stylesheet" href="./codejump-files/jqtree.css">
+    <link rel="stylesheet" href="./codejump-files/css/codemirror.css" />
+    <link rel="stylesheet" href="./codejump-files/css/jqtree.css">
     
     <style>
       .CodeMirror {
@@ -109,7 +45,7 @@ if (is_logged_in()) {
       body {
         padding-top:40px;padding-bottom:40px;
       }
-      #list-file { height:400px;overflow-y:scroll; }
+      #list-file { height:400px;overflow-y:scroll; border:1px solid #eee; padding-left: 15px;}
 	  #sidebar { padding:10px; }
     </style>
   </head>
@@ -181,7 +117,9 @@ if (is_logged_in()) { ?>
 	  <div class="container">
 	  	<div class="row-fluid">
 	  		<div class="span4 offset4">
-				<img src="./codejump-files/images/logo-black.png" alt="CodeJump Logo" style="width:100%" />
+				<div style="background:#34495e; padding:20px;">
+					<img src="./codejump-files/images/logo3-white.png" alt="CodeJump Logo" style="width:100%" />
+				</div>
 				<div class="share" style="padding:10px;margin-top:30px;">
 					<form action="codejump.php" method="post">
 						<legend>Log In</legend>
@@ -224,17 +162,17 @@ if (is_logged_in()) { ?>
     </script>
     
     <!-- --------------------------------------------------------------- -->
-	<script src="./codejump-files/codemirror.js"></script>
-	<script src="./codejump-files/xml.js"></script>
-	<script src="./codejump-files/css.js"></script>
-	<script src="./codejump-files/javascript.js"></script>
-	<script src="./codejump-files/htmlmixed.js"></script>
-	<!-- <script src="./codejump-files/js/codemirror-addon/search/searchcursor.js"></script>
-	<script src="./codejump-files/js/codemirror-addon/search/match-highlighter.js"></script> -->
+	<script src="./codejump-files/js/codemirror/codemirror.js"></script>
+	<script src="./codejump-files/js/codemirror/xml.js"></script>
+	<script src="./codejump-files/js/codemirror/css.js"></script>
+	<script src="./codejump-files/js/codemirror/javascript.js"></script>
+	<script src="./codejump-files/js/codemirror/htmlmixed.js"></script>
+	<!-- <script src="./codejump-files/js/codemirror/search-addon/searchcursor.js"></script>
+	<script src="./codejump-files/js/codemirror/search-addon/match-highlighter.js"></script> -->
 
-	<script src="./codejump-files/emmet.min.js"></script>
-    <script src="./codejump-files/tree.jquery.js"></script>
-	<script src="./codejump-files/library.js"></script>
+	<script src="./codejump-files/js/other-script/emmet.min.js"></script>
+    <script src="./codejump-files/js/other-script/tree.jquery.js"></script>
+	<script src="./codejump-files/js/other-script/library.js"></script>
 	<!-- --------------------------------------------------------------- -->
         
     <script>
