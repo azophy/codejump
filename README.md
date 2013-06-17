@@ -77,6 +77,11 @@ Plans for the future
 ChangeLog
 ---------
 
+### What's new on version 0.92
+- doing some refactoring & reorganizing some files location
+- add php highlighting
+- modify file browser's look
+
 ### What's new on version 0.9
 - file upload feature
 - bugfixe on ajax filename access

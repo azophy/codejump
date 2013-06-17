@@ -76,4 +76,60 @@ function generate_dir_structure_JSON_code($rr) {
     }
   }
 }
+
+function get_path_content($path) {
+	$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path),
+                                              RecursiveIteratorIterator::CHILD_FIRST);
+    $dir = array();
+	$files = array();
+	
+	foreach ($iterator as $sub) {
+      if ($sub->isDir()) {
+         //$dir = array_merge($dir, $sub->__toString());
+		 $dir[] = $sub->getFilename();
+      } else {
+         //$files = array_merge($files, $sub->__toString());
+		 $files[] = $sub->getFilename();
+      }
+	  //echo $sub->getFilename(); //./codejump-files/library.php
+    }
+	
+	ksort($dir);
+	ksort($files);
+	
+echo '[';
+
+foreach ($dir as $key) {
+echo "  {
+    label: '".$key."',
+    id: '".$path."/".$key."',
+    load_on_demand: true
+  },";
+}
+
+foreach ($files as $key) {
+echo "  {
+    label: '".$key."',
+    id: '".$path."/".$key."',
+  },";
+}
+
+echo ']';
+
+}
+
+function hierarchy_sort($data) {
+	$dirs = array();
+	$files = array();
+	
+	foreach ($data as $key => $val) {
+		if (is_dir($val)) {
+			$dirs[$key]=hierarchy_sort($val);
+		} else {
+			$files[$key]=$val;
+		}
+	}
+
+	return($dirs+$files);
+}
 ?>

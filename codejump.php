@@ -86,7 +86,8 @@ if (is_logged_in()) { ?>
       <div class="row-fluid" id="main-area">
         <div class="span3" id="sidebar">
 			<h4>File Browser</h4><hr />
-			<div id="list-file"></div>
+			<!-- <div id="list-file"></div> -->
+			<div id="list-file" data-url="./codejump.php"></div>
 			<hr/>
         </div>
         <div class="span9">
@@ -167,6 +168,8 @@ if (is_logged_in()) { ?>
 	<script src="./codejump-files/js/codemirror/css.js"></script>
 	<script src="./codejump-files/js/codemirror/javascript.js"></script>
 	<script src="./codejump-files/js/codemirror/htmlmixed.js"></script>
+	<script src="./codejump-files/js/codemirror/clike.js"></script>
+	<script src="./codejump-files/js/codemirror/php.js"></script>
 	<!-- <script src="./codejump-files/js/codemirror/search-addon/searchcursor.js"></script>
 	<script src="./codejump-files/js/codemirror/search-addon/match-highlighter.js"></script> -->
 
@@ -177,7 +180,8 @@ if (is_logged_in()) { ?>
         
     <script>
 		var doc = CodeMirror.fromTextArea(document.getElementById("code"), {
-			mode : "text/html",
+			mode: "application/x-httpd-php",
+			//mode : "text/html",
 			//mode : "htmlmixed",
 			lineNumbers : true,
             indentWithTabs : true,
@@ -279,7 +283,7 @@ if (is_logged_in()) { ?>
       var data = [
 <?php 
 $r = get_dir_structure($root_path);
-ksort($r);        
+$r = hierarchy_sort($r);
 generate_dir_structure_JSON_code($r);
 ?>];      
       $('#list-file').tree({
