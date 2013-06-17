@@ -16,7 +16,10 @@ if (is_logged_in()) {
   if (isset($_GET['is_file_exist'])) {
       echo (file_exists($_GET['is_file_exist']))?'1':'0';
       exit(0);
-  } else if (isset($_FILES["upload_file"])) {
+ } else if (isset($_GET['node'])) {
+  	get_path_content($_GET['node']);
+	exit(0);
+ } else if (isset($_FILES["upload_file"])) {
   	if ($_FILES["upload_file"]["error"] > 0) {
 	  //echo "Return Code: " . $_FILES["upload_file"]["error"] . "<br>";
     } else {
